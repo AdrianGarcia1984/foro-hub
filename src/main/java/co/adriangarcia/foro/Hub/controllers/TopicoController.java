@@ -45,8 +45,8 @@ public class TopicoController {
             description = "",
             tags = { "get" })
     public ResponseEntity<Page<DatosrespuestaTopico>> listadoTopicos(@PageableDefault(size = 4) Pageable paginacion){
+        System.out.println( topicoRepository.findAll(paginacion).map(DatosrespuestaTopico::new));
 
-//        return medicoRepository.findAll(paginacion).map(DatosListadoMedico::new);
             return ResponseEntity.ok(topicoRepository.findAll(paginacion).map(DatosrespuestaTopico::new));
     }
 
