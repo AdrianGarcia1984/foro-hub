@@ -11,6 +11,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -28,10 +29,31 @@ public class AuthController {
 
     @PostMapping
     public ResponseEntity autenticarUsuario(@RequestBody @Valid DatosAutenticacionUsuario datosAutenticacionUsuario) {
-        Authentication authToken = new UsernamePasswordAuthenticationToken(datosAutenticacionUsuario.email(),
-                datosAutenticacionUsuario.password());
-        var usuarioAutenticado = authenticationManager.authenticate(authToken);
-        var JWTtoken = tokenService.generarToken((Usuario) usuarioAutenticado.getPrincipal());
-        return ResponseEntity.ok(new DatosJWTToken(JWTtoken));
+
+        System.out.println("paso 1: ingresa");
+
+        Authentication authentication = authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(
+                datosAutenticacionUsuario.email(), datosAutenticacionUsuario.clave()));
+        if(authentication.isAuthenticated()){
+//            return DatosAutenticacionUsuario.builder()
+//                    .accessToken(jwtService.GenerateToken(authRequestDTO.getUsername()).build();
+            var JWTtoken = tokenService.generarToken((Usuario) authentication.getPrincipal());
+            return ResponseEntity.ok(new DatosJWTToken(JWTtoken));
+        } else {
+            throw new UsernameNotFoundException("invalid user request..!!");
+        }
+
+//
+//        Authentication authToken = new UsernamePasswordAuthenticationToken(datosAutenticacionUsuario.email(),
+//                datosAutenticacionUsuario.clave());
+//        System.out.println("paso 2, se crea el authToken: "+authToken);
+//
+//
+//        var usuarioAutenticado = authenticationManager.authenticate(authToken);
+//
+//        System.out.println("paso 3: usuario autenticado: "+usuarioAutenticado.isAuthenticated());
+//
+//        var JWTtoken = tokenService.generarToken((Usuario) usuarioAutenticado.getPrincipal());
+//        return ResponseEntity.ok(new DatosJWTToken(JWTtoken));
     }
 }

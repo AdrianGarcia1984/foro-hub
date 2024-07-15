@@ -6,11 +6,11 @@ public record DatosRegistroUsuario (
         @NotBlank
         String nombre,
         @NotBlank
-        String password,
+        String clave,
         @NotBlank
         @Email
-        String email,
-        @NotNull
-        Perfil perfil
+        String email//,
+        //@NotNull
+        //Perfil perfil
 ){
 }
