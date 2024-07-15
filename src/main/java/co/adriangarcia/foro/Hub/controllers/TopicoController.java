@@ -1,9 +1,6 @@
 package co.adriangarcia.foro.Hub.controllers;
 
-import co.adriangarcia.foro.Hub.domain.topico.DatosNuevoTopico;
-import co.adriangarcia.foro.Hub.domain.topico.DatosrespuestaTopico;
-import co.adriangarcia.foro.Hub.domain.topico.TopicoRepository;
-import co.adriangarcia.foro.Hub.domain.topico.TopicoService;
+import co.adriangarcia.foro.Hub.domain.topico.*;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import jakarta.validation.Valid;
@@ -45,9 +42,23 @@ public class TopicoController {
             description = "",
             tags = { "get" })
     public ResponseEntity<Page<DatosrespuestaTopico>> listadoTopicos(@PageableDefault(size = 4) Pageable paginacion){
-        System.out.println( topicoRepository.findAll(paginacion).map(DatosrespuestaTopico::new));
+        return ResponseEntity.ok(topicoRepository.findAll(paginacion).map(DatosrespuestaTopico::new));
+    }
 
-            return ResponseEntity.ok(topicoRepository.findAll(paginacion).map(DatosrespuestaTopico::new));
+    @DeleteMapping("/{id}")
+    @Transactional
+    @Operation(
+            summary = "elimina un topico de la base de datos por el id",
+            description = "",
+            tags = { "delete" })
+    public ResponseEntity eliminarTopico (@PathVariable Long id){
+        var topico = service.eliminarTopico(id);
+        System.out.println("respuesta del topicodelete: "+topico);
+        if (topico != null){
+            return ResponseEntity.noContent().build();
+        }
+        return ResponseEntity.ok("no encontrado");
+
     }
 
 }

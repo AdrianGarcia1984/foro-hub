@@ -2,8 +2,11 @@ package co.adriangarcia.foro.Hub.domain.topico;
 
 import co.adriangarcia.foro.Hub.domain.usuarios.Usuario;
 import co.adriangarcia.foro.Hub.domain.usuarios.UsuarioRepository;
+import jakarta.persistence.EntityNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
+import org.springframework.web.bind.annotation.PathVariable;
 
 import java.util.Optional;
 
@@ -35,7 +38,21 @@ public class TopicoService {
         return "topico creado con exito";
     }
 
+    public String eliminarTopico (Long id){
+        try{
+            var topico = topicoRepository.getReferenceById(id);
+            System.out.println("topico delete: "+topico);
+            if (topico != null){
+                topicoRepository.delete(topico);
+                return "eliminado";
+            }
+            return "no encontrado";
+        } catch (EntityNotFoundException e){
+            return "error";
+        }
 
+
+    }
 
 
 }
